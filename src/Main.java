@@ -38,8 +38,8 @@ public class Main {
         float length,width,coating;
         float WallsToPaint = 0;
         float ObjectsToExclude =0;
-        float TotalAreaToPaint=0;
-        float PaintPerLitre=0;
+        float TotalAreaToPaint;
+        float PaintPerLitre;
 
         //Ask for each wall details.
         for (int i =1;i<=walls;i++)
