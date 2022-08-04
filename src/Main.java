@@ -1,7 +1,7 @@
 import java.util.Scanner;
 
-public class Main {
 
+public class Main {
     public static void main(String[] args)
     {
         PaintCalculator Pcalc = new PaintCalculator();
@@ -16,32 +16,35 @@ public class Main {
         float PaintPerLitre=0;
 
         //Ask for each wall details.
-        for (int i =0;i<walls;i++)
+        for (int i =1;i<=walls;i++)
         {
             //Ask user to enter length
-            System.out.println("Enter length of wall in meters: ");
+            System.out.println("Enter length of wall number ("+i+") in meters: ");
             length = input.nextFloat();
             //Ask user to enter width
-            System.out.println("Enter width of wall in meters: ");
+            System.out.println("Enter width of wall number ("+i+") in meters: ");
             width = input.nextFloat();
             System.out.println("Enter number of coating for this wall: ");
             coating = input.nextFloat();
-            WallsToPaint += Pcalc.SurfaceArea(width,length)*coating;
+            WallsToPaint += Pcalc.SurfaceAreaOfWall(width,length)*coating;
         }
 
-        //Windows or doors?
+        //Get object to exclude from the paint such as windows or doors.
         System.out.println("Enter number of object to exclude from the paint (doors/windows): ");
         int object_to_exclude = input.nextInt();
+        //Get the surface area of the objects to exclude.
         for (int i =0;i<object_to_exclude;i++)
         {
-            System.out.println("Enter length of windows/doors in meters: ");
+            System.out.println("Enter length of object number ("+i+") in meters: ");
             length = input.nextFloat();
-            System.out.println("Enter width of windows/doors in meters: ");
+            System.out.println("Enter width of object number ("+i+") in meters: ");
             width = input.nextFloat();
-            ObjectsToExclude += Pcalc.SurfaceArea(width,length);
+            ObjectsToExclude += Pcalc.SurfaceAreaOfWall(width,length);
         }
+        //Calculate the total amount of area required for the area to paint.
         TotalAreaToPaint = WallsToPaint - ObjectsToExclude;
         System.out.println(TotalAreaToPaint+" meter squared required painting");
+
         PaintPerLitre = Pcalc.MetersPerPaintLitres(TotalAreaToPaint);
         System.out.println(PaintPerLitre+" litres of paint needed."); //Tell the user how much litre of paint needed.
         System.out.println(Math.ceil(PaintPerLitre)+" litres of paint you should buy."); //Tell the user how much litre of paint needed.
