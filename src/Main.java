@@ -1,78 +1,116 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
-
-
 public class Main {
-    public static float SurfaceAreaOfWall(float width, float height)
-    {
-        return width * height;
-    }
-    public static float AreaOfCircle(float radius)
-    {
-        return 3.1416f*radius*radius;
-    }
-    public static float AreaOfTriangle(float base, float height)
-    {
-        return 0.5f*base*height;
-    }
-    public static float MetersPerPaintLitres(float area)
+    static float MetersPerPaintLitres(float area)
     {
         return area/6.5f;
     }
-    public static float FeetPerMeters(float feet)
+    static void DisplayMenu() //Display the menu
     {
-        return feet*3.28084f;
+        System.out.println(
+                """
+                        ====Display=Menu====
+                        1...Add wall dimensions.
+                        2...Add objects to exclude.
+                        3...Remove wall dimensions you last entered.
+                        4...Remove object to exclude you last entered.
+                        5...Run Calculation.
+                        
+                        0...Quit
+                        Select your option (1-5) :
+                        """
+        );
     }
-    public static float CentimeterPerMeter(float cm){
-        return cm*100;
-    }
-    public static float InchesPerMeter(float inch)
+    static float AddWallDimension(Scanner input)
     {
-        return inch*39.3701f;
+        System.out.println("Enter length of wall in meters: ");
+        float length = input.nextFloat();
+        System.out.println("Enter width of wall in meters: ");
+        float width = input.nextFloat();
+        System.out.println("Enter number of coating: ");
+        float coat = input.nextFloat();
+        return length*width*coat;
+    }
+    static float AddObjectDimension(Scanner input)
+    {
+        System.out.println("Enter length of object in meters: ");
+        float length = input.nextFloat();
+        System.out.println("Enter width of object in meters: ");
+        float width = input.nextFloat();
+        return length*width;
     }
     public static void main(String[] args)
     {
         Scanner input = new Scanner(System.in);
-        //Ask user for number of walls input
-        System.out.println("Enter number of walls to paint: ");
-        int walls = input.nextInt();
-        float length,width,coating;
-        float WallsToPaint = 0;
-        float ObjectsToExclude =0;
-        float TotalAreaToPaint;
-        float PaintPerLitre;
+        int useroption;
+        boolean quit = false;
+        List WallDimension = new ArrayList();
+        List ObjectDimension = new ArrayList();
+        float totalWallDimension=0;
+        float totalObjectDimension=0;
+        float totalPaintNeeded;
+        float paintPerLitre;
+        while (!quit) {
+            System.out.println();
+            DisplayMenu();
+            useroption = input.nextInt();
+            switch (useroption) {
+                case 1:
+                    WallDimension.add(AddWallDimension(input));
+                    break;
+                case 2:
+                    ObjectDimension.add(AddObjectDimension(input));
+                    break;
+                case 3:
+                    try {
+                        WallDimension.remove(WallDimension.size()-1);
+                    }
+                    catch (Exception e)
+                    {
+                        System.out.println("Please add a wall first.");
+                    }
+                    break;
+                case 4:
+                    try {
+                        ObjectDimension.remove(ObjectDimension.size()-1);
+                    }
+                    catch (Exception e)
+                    {
+                        System.out.println("Please add a object first.");
+                    }
+                    break;
+                case 5:
+                    if (WallDimension.size() != 0){
+                        for (int i = 0; i <WallDimension.size();i++)
+                        {
+                            totalWallDimension += (float) WallDimension.get(i);
+                        }
+                        if (ObjectDimension.size() != 0)
+                        {
+                            for(int i = 0; i < ObjectDimension.size();i++)
+                            {
+                                totalObjectDimension += (float) ObjectDimension.get(i);
+                            }
+                        }
+                        totalPaintNeeded = totalWallDimension - totalObjectDimension;
+                        paintPerLitre = MetersPerPaintLitres(totalPaintNeeded);
+                        System.out.println(totalPaintNeeded+" meter squared required painting");
+                        System.out.println(paintPerLitre+" litres of paint needed."); //Tell the user how much litre of paint needed.
+                        System.out.println(Math.ceil(paintPerLitre)+" litres of paint you should buy."); //Tell the user how much litre of paint needed.
+                    }
+                    else
+                        System.out.println("Please add a wall to calculate");
+                    break;
 
-        //Ask for each wall details.
-        for (int i =1;i<=walls;i++)
-        {
-            //Ask user to enter length
-            System.out.println("Enter length of wall number ("+i+") in meters: ");
-            length = input.nextFloat();
-            //Ask user to enter width
-            System.out.println("Enter width of wall number ("+i+") in meters: ");
-            width = input.nextFloat();
-            System.out.println("Enter number of coating for this wall: ");
-            coating = input.nextFloat();
-            WallsToPaint += SurfaceAreaOfWall(width,length)*coating;
+                case 0:
+                    quit = true;
+                    break;
+
+                default:
+                    System.out.println("Invalid option!");
+            }
         }
-
-        //Get object to exclude from the paint such as windows or doors.
-        System.out.println("Enter number of object to exclude from the paint (doors/windows): ");
-        int object_to_exclude = input.nextInt();
-        //Get the surface area of the objects to exclude.
-        for (int i =0;i<object_to_exclude;i++)
-        {
-            System.out.println("Enter length of object number ("+i+") in meters: ");
-            length = input.nextFloat();
-            System.out.println("Enter width of object number ("+i+") in meters: ");
-            width = input.nextFloat();
-            ObjectsToExclude += SurfaceAreaOfWall(width,length);
-        }
-        //Calculate the total amount of area required for the area to paint.
-        TotalAreaToPaint = WallsToPaint - ObjectsToExclude;
-        System.out.println(TotalAreaToPaint+" meter squared required painting");
-
-        PaintPerLitre = MetersPerPaintLitres(TotalAreaToPaint);
-        System.out.println(PaintPerLitre+" litres of paint needed."); //Tell the user how much litre of paint needed.
-        System.out.println(Math.ceil(PaintPerLitre)+" litres of paint you should buy."); //Tell the user how much litre of paint needed.
+        System.out.println("Application Closed.");
     }
 }
